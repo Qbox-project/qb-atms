@@ -64,9 +64,10 @@ RegisterNetEvent('qb-atms:client:loadATM', function(cards)
             local atm = IsObjectNearPoint(hash, playerCoords.x, playerCoords.y, playerCoords.z, 1.5)
             if atm then
                 PlayATMAnimation('enter')
-                if lib.progressBar({
+                if lib.progressCircle({
                     duration = 1500,
                     label = 'Accessing ATM',
+                    position = 'bottom',
                     useWhileDead = false,
                     canCancel = true,
                     disable = {
