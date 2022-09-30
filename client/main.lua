@@ -42,7 +42,7 @@ if Config.UseTarget then
     CreateThread(function()
         local options = {
             {
-                  name = 'ox:option1',
+                  name = 'atm:open',
                   icon = 'fas fa-credit-card',
                   label = 'Use ATM',
                   serverEvent = 'qb-atms:server:enteratm',
