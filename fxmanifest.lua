@@ -1,10 +1,13 @@
 fx_version 'cerulean'
 game 'gta5'
 
-description 'QB-ATM'
-version '1.0.0'
+description 'https://github.com/QBCore-Remastered'
+version '1.0.1'
 
-shared_script 'config.lua'
+shared_scripts {
+	'@ox_lib/init.lua',
+	'config.lua',
+}
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
