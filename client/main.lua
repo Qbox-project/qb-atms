@@ -46,9 +46,7 @@ if Config.UseTarget then
                   icon = 'fas fa-credit-card',
                   label = 'Use ATM',
                   serverEvent = 'qb-atms:server:enteratm',
-                  canInteract = function(entity, coords, distance)
-                      return QBCore.Functions.HasItem('visa') or QBCore.Functions.HasItem('mastercard')
-                  end
+                  items = {'visa', 'mastercard'}
               }
           }
           exports.ox_target:addModel(Config.ATMModels, options)
