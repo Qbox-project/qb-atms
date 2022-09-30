@@ -37,20 +37,21 @@ RegisterNetEvent('qb-atms:client:updateBankInformation', function(banking)
     })
 end)
 
--- qb-target
+-- ox_target
 if Config.UseTarget then
     CreateThread(function()
-        exports['qb-target']:AddTargetModel(Config.ATMModels, {
-            options = {
-                {
-                    event = 'qb-atms:server:enteratm',
-                    type = 'server',
-                    icon = "fas fa-credit-card",
-                    label = "Use ATM",
-                },
-            },
-            distance = 1.5,
-        })
+        local options = {
+            {
+                  name = 'ox:option1',
+                  icon = 'fas fa-credit-card',
+                  label = 'Use ATM',
+                  serverEvent = 'qb-atms:server:enteratm',
+                  canInteract = function(entity, coords, distance)
+                      return QBCore.Functions.HasItem('visa') or QBCore.Functions.HasItem('mastercard')
+                  end
+              }
+          }
+          exports.ox_target:addModel(Config.ATMModels, options)
     end)
 end
 
@@ -63,24 +64,48 @@ RegisterNetEvent('qb-atms:client:loadATM', function(cards)
             local atm = IsObjectNearPoint(hash, playerCoords.x, playerCoords.y, playerCoords.z, 1.5)
             if atm then
                 PlayATMAnimation('enter')
-                QBCore.Functions.Progressbar("accessing_atm", "Accessing ATM", 1500, false, true, {
-                    disableMovement = false,
-                    disableCarMovement = false,
-                    disableMouse = false,
-                    disableCombat = false,
-                }, {}, {}, {}, function() -- Done
+                if lib.progressBar({
+                    duration = 1500,
+                    label = 'Accessing ATM',
+                    useWhileDead = false,
+                    canCancel = true,
+                    disable = {
+                        car = true,
+                    },
+                }) then
                     SetNuiFocus(true, true)
                     SendNUIMessage({
                         status = "openATMFrontScreen",
                         cards = cards,
                     })
-                end, function()
-                    QBCore.Functions.Notify("Failed!", "error")
-                end)
+                else
+                    lib.notify({
+                        id = 'stop_atm',
+                        title = 'Failed!',
+                        position = 'top-right',
+                        style = {
+                            backgroundColor = '#141517',
+                            color = '#909296'
+                        },
+                        icon = 'xmark',
+                        iconColor = '#C53030'
+                    })
+                end
             end
         end
     else
-        QBCore.Functions.Notify("Please visit a branch to order a card", "error")
+        lib.notify({
+            id = 'no_atm_card',
+            title = 'Failed!',
+            description = 'Please visit a branch to order a card',
+            position = 'top-right',
+            style = {
+                backgroundColor = '#141517',
+                color = '#909296'
+            },
+            icon = 'xmark',
+            iconColor = '#C53030'
+        })
     end
 end)
 
@@ -132,9 +157,30 @@ RegisterNUICallback("removeCard", function(data)
             SendNUIMessage({
                 status = "closeATM"
             })
-            QBCore.Functions.Notify('Card has been deleted.', 'success')
+            lib.notify({
+                id = 'card_deletes',
+                title = 'Success!',
+                description = 'Card has been deleted',
+                position = 'top-right',
+                style = {
+                    backgroundColor = '#141517',
+                    color = '#909296'
+                },
+                icon = 'check',
+                iconColor = '#07c70d '
+            })
         else
-            QBCore.Functions.Notify('Failed to delete card.', 'error')
+            lib.notify({
+                id = 'failed_delete_card',
+                title = 'Failed to delete card.',
+                position = 'top-right',
+                style = {
+                    backgroundColor = '#141517',
+                    color = '#909296'
+                },
+                icon = 'xmark',
+                iconColor = '#C53030'
+            })
         end
     end, data)
 end)

@@ -7,7 +7,17 @@ CreateThread(function()
     while true do
         Wait(3600000)
         dailyWithdraws = {}
-        TriggerClientEvent('QBCore:Notify', -1, "Daily Withdraw Limit Reset", "success")
+        TriggerClientEvent('ox_lib:notify', -1, {
+            id = 'Withdraw_reset',
+            description = 'Daily Withdraw Limit Reset',
+            duration = 5000,
+            style = {
+                backgroundColor = '#141517',
+                color = '#ffffff'
+            },
+            icon = 'money-bills',
+            iconColor = '#07c70d'
+        })
     end
 end)
 
@@ -133,9 +143,30 @@ RegisterNetEvent('qb-atms:server:doAccountWithdraw', function(data)
                     xCH.Functions.RemoveMoney('bank', tonumber(data.amount))
                     xPlayer.Functions.AddMoney('cash', tonumber(data.amount))
                     dailyWithdraws[cardHolder] = dailyWithdraws[cardHolder] + tonumber(data.amount)
-                    TriggerClientEvent('QBCore:Notify', src, "Withdraw $" .. data.amount .. ' from credit card. Daily Withdraws: ' .. dailyWithdraws[cardHolder], "success")
+                    TriggerClientEvent('ox_lib:notify', src, {
+                        id = 'atm_withdraw',
+                        title = "Withdraw $" .. data.amount .. ' from credit card.',
+                        description = 'Daily Withdraws: ' .. dailyWithdraws[cardHolder],
+                        duration = 5000,
+                        style = {
+                            backgroundColor = '#141517',
+                            color = '#ffffff'
+                        },
+                        icon = 'money-bills',
+                        iconColor = '#07c70d'
+                    })
                 else
-                    TriggerClientEvent('QBCore:Notify', src, "Not Enough Money", "error")
+                    TriggerClientEvent('ox_lib:notify', src, {
+                        id = 'atm_no_money',
+                        description = 'Not Enough Money',
+                        duration = 5000,
+                        style = {
+                            backgroundColor = '#141517',
+                            color = '#ffffff'
+                        },
+                        icon = 'xmark',
+                        iconColor = '#C53030'
+                    })
                 end
 
                 banking['online'] = true
@@ -152,9 +183,30 @@ RegisterNetEvent('qb-atms:server:doAccountWithdraw', function(data)
                     xCH.money.bank = bankCount
                     MySQL.Async.execute('UPDATE players SET money = ? WHERE citizenid = ?', { xCH.money, cardHolder })
                     dailyWithdraws[cardHolder] = dailyWithdraws[cardHolder] + tonumber(data.amount)
-                    TriggerClientEvent('QBCore:Notify', src, "Withdraw $" .. data.amount .. ' from credit card. Daily Withdraws: ' .. dailyWithdraws[cardHolder], "success")
+                    TriggerClientEvent('ox_lib:notify', src, {
+                        id = 'atm_withdraw2',
+                        title = "Withdraw $" .. data.amount .. ' from credit card.',
+                        description = 'Daily Withdraws: ' .. dailyWithdraws[cardHolder],
+                        duration = 5000,
+                        style = {
+                            backgroundColor = '#141517',
+                            color = '#ffffff'
+                        },
+                        icon = 'money-bills',
+                        iconColor = '#07c70d'
+                    })
                 else
-                    TriggerClientEvent('QBCore:Notify', src, "Not Enough Money", "error")
+                    TriggerClientEvent('ox_lib:notify', src, {
+                        id = 'atm_no_money2',
+                        description = 'Not Enough Money',
+                        duration = 5000,
+                        style = {
+                            backgroundColor = '#141517',
+                            color = '#ffffff'
+                        },
+                        icon = 'xmark',
+                        iconColor = '#C53030'
+                    })
                 end
 
                 banking['online'] = false
@@ -166,6 +218,17 @@ RegisterNetEvent('qb-atms:server:doAccountWithdraw', function(data)
             TriggerClientEvent('qb-atms:client:updateBankInformation', src, banking)
         else
             TriggerClientEvent('QBCore:Notify', src, "You have reached the daily limit", "error")
+            TriggerClientEvent('ox_lib:notify', src, {
+                id = 'atm_daily_limit',
+                description = 'You have reached the daily limit',
+                duration = 5000,
+                style = {
+                    backgroundColor = '#141517',
+                    color = '#ffffff'
+                },
+                icon = 'circle-info',
+                iconColor = '#0F52BA'
+            })
         end
     end
 end)
