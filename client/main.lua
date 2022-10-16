@@ -78,33 +78,12 @@ RegisterNetEvent('qb-atms:client:loadATM', function(cards)
                         cards = cards,
                     })
                 else
-                    lib.notify({
-                        id = 'stop_atm',
-                        title = 'Failed!',
-                        position = 'top-right',
-                        style = {
-                            backgroundColor = '#141517',
-                            color = '#909296'
-                        },
-                        icon = 'xmark',
-                        iconColor = '#C53030'
-                    })
+                    lib.notify({ description = 'Failed!', type = 'error' })
                 end
             end
         end
     else
-        lib.notify({
-            id = 'no_atm_card',
-            title = 'Failed!',
-            description = 'Please visit a branch to order a card',
-            position = 'top-right',
-            style = {
-                backgroundColor = '#141517',
-                color = '#909296'
-            },
-            icon = 'xmark',
-            iconColor = '#C53030'
-        })
+        lib.notify({ description = 'Please visit a branch to order a card', type = 'error' })
     end
 end)
 
@@ -156,30 +135,9 @@ RegisterNUICallback("removeCard", function(data)
             SendNUIMessage({
                 status = "closeATM"
             })
-            lib.notify({
-                id = 'card_deletes',
-                title = 'Success!',
-                description = 'Card has been deleted',
-                position = 'top-right',
-                style = {
-                    backgroundColor = '#141517',
-                    color = '#909296'
-                },
-                icon = 'check',
-                iconColor = '#07c70d '
-            })
+            lib.notify({ description = 'Card has been deleted', type = 'success' })
         else
-            lib.notify({
-                id = 'failed_delete_card',
-                title = 'Failed to delete card.',
-                position = 'top-right',
-                style = {
-                    backgroundColor = '#141517',
-                    color = '#909296'
-                },
-                icon = 'xmark',
-                iconColor = '#C53030'
-            })
+            lib.notify({ description = 'Failed to delete the card', type = 'error' })
         end
     end, data)
 end)
